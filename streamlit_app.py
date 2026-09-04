@@ -4,8 +4,15 @@ import plotly.express as px
 from sklearn.ensemble import RandomForestRegressor
 from datetime import date, datetime
 import os
-# ---------------- SIDEBAR ----------------
 
+# ---------------- PAGE SETTINGS (must be first Streamlit command) ----------------
+st.set_page_config(
+    page_title="Medicine Shortage Prediction",
+    page_icon="💊",
+    layout="wide"
+)
+
+# ---------------- SIDEBAR ----------------
 st.sidebar.title("💊 Medicine AI")
 
 st.sidebar.markdown("""
@@ -23,8 +30,8 @@ st.sidebar.divider()
 st.sidebar.info(
     "AI-Powered Medicine Shortage & Demand Prediction System"
 )
-# ---------------- MAIN HEADER ----------------
 
+# ---------------- MAIN HEADER ----------------
 st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
 
 st.markdown(
@@ -38,33 +45,20 @@ st.markdown(
 )
 
 st.divider()
-# ---------------- CUSTOM UI STYLE ----------------
 
+# ---------------- CUSTOM UI STYLE ----------------
 st.markdown("""
 <style>
-
 .main {
     padding: 2rem;
 }
-
 div[data-testid="stMetric"] {
     border-radius: 10px;
     padding: 15px;
     border: 1px solid #dddddd;
 }
-
 </style>
 """, unsafe_allow_html=True)
-
-# ---------------- PAGE SETTINGS ----------------
-st.set_page_config(
-    page_title="Medicine Shortage Prediction",
-    page_icon="💊",
-    layout="wide"
-)
-
-st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
-st.write("Predict medicine demand, shortage risks, and manage medicine data.")
 
 # ---------------- FILE UPLOAD ----------------
 st.sidebar.header("📤 Upload Medicine Dataset")
@@ -130,7 +124,8 @@ with col3:
         "📈 Average Demand",
         round(data["Demand"].mean())
     )
-    # ---------------- SMART MEDICINE INSIGHTS ----------------
+
+# ---------------- SMART MEDICINE INSIGHTS ----------------
 st.subheader("🚨 Smart Medicine Insights")
 
 col1, col2 = st.columns(2)
@@ -166,7 +161,33 @@ with col2:
         ],
         use_container_width=True
     )
-    # ---------------- MEDICINE SEARCH ----------------
+
+# ---------------- SHORTAGE STATUS CHART ----------------
+st.subheader("🚨 Medicine Shortage Status")
+
+shortage_data = data.copy()
+
+shortage_data["Status"] = shortage_data.apply(
+    lambda row: "Shortage Risk"
+    if row["Demand"] > row["Current_Stock"]
+    else "Stock Available",
+    axis=1
+)
+
+status_count = shortage_data["Status"].value_counts()
+
+fig_status = px.pie(
+    values=status_count.values,
+    names=status_count.index,
+    title="Medicine Shortage Status"
+)
+
+st.plotly_chart(
+    fig_status,
+    use_container_width=True
+)
+
+# ---------------- MEDICINE SEARCH ----------------
 st.subheader("🔍 Medicine Search & Details")
 
 medicine_list = sorted(data["Medicine_Name"].unique())
@@ -217,11 +238,7 @@ chart1 = px.bar(
     color="Medicine_Name",
     title="Medicine Demand Analysis"
 )
-
-st.plotly_chart(
-    chart1,
-    use_container_width=True
-)
+st.plotly_chart(chart1, use_container_width=True)
 
 chart2 = px.bar(
     data,
@@ -230,13 +247,9 @@ chart2 = px.bar(
     color="Medicine_Name",
     title="Current Medicine Stock"
 )
+st.plotly_chart(chart2, use_container_width=True)
 
-st.plotly_chart(
-    chart2,
-    use_container_width=True
-)
 # ---------------- STOCK VS DEMAND GRAPH ----------------
-
 st.subheader("📊 Current Stock vs Demand")
 
 chart_data = data[
@@ -250,35 +263,9 @@ fig = px.bar(
     barmode="group",
     title="Medicine Stock vs Demand Comparison"
 )
-
 st.plotly_chart(fig, use_container_width=True)
-# ---------------- SHORTAGE STATUS CHART ----------------
 
-st.subheader("🚨 Medicine Shortage Status")
-
-shortage_data = data.copy()
-
-shortage_data["Status"] = shortage_data.apply(
-    lambda row: "Shortage Risk"
-    if row["Demand"] > row["Current_Stock"]
-    else "Stock Available",
-    axis=1
-)
-
-status_count = shortage_data["Status"].value_counts()
-
-fig_status = px.pie(
-    values=status_count.values,
-    names=status_count.index,
-    title="Medicine Shortage Status"
-)
-
-st.plotly_chart(
-    fig_status,
-    use_container_width=True
-)
 # ---------------- TOP 5 HIGH DEMAND GRAPH ----------------
-
 st.subheader("🏆 Top 5 High-Demand Medicines")
 
 top_demand = data.sort_values(
@@ -292,13 +279,9 @@ fig_top = px.bar(
     y="Demand",
     title="Top 5 High-Demand Medicines"
 )
+st.plotly_chart(fig_top, use_container_width=True)
 
-st.plotly_chart(
-    fig_top,
-    use_container_width=True
-)
 # ---------------- LOW STOCK GRAPH ----------------
-
 st.subheader("⚠️ Low Stock Medicines")
 
 low_stock_chart = data[
@@ -306,28 +289,20 @@ low_stock_chart = data[
 ]
 
 if not low_stock_chart.empty:
-
     fig_low = px.bar(
         low_stock_chart,
         x="Medicine_Name",
         y="Current_Stock",
         title="Low Stock Medicines"
     )
-
-    st.plotly_chart(
-        fig_low,
-        use_container_width=True
-    )
-
+    st.plotly_chart(fig_low, use_container_width=True)
 else:
     st.success("✅ No Low Stock Medicines Found!")
 
 # ---------------- PREDICTION ----------------
 st.subheader("🔮 Predict Medicine Demand")
 
-medicine_name = st.text_input(
-    "Medicine Name"
-)
+medicine_name = st.text_input("Medicine Name")
 
 current_stock = st.number_input(
     "Current Stock",
@@ -360,23 +335,6 @@ if st.button("🔮 Predict Demand"):
     st.success(
         f"💊 Predicted Demand: {predicted_demand} units"
     )
-    # ---------------- REORDER RECOMMENDATION ----------------
-
-st.subheader("📦 Reorder Recommendation")
-
-if predicted_demand > current_stock:
-
-    reorder_quantity = predicted_demand - current_stock
-
-    st.warning(
-        f"⚠️ Recommended to reorder {reorder_quantity} units"
-    )
-
-else:
-
-    st.success(
-        "✅ Current stock is sufficient. No reorder required."
-    )
 
     # SHORTAGE RISK SCORE
     if predicted_demand > current_stock:
@@ -389,11 +347,7 @@ else:
         risk_score = 0
 
     st.subheader("🚨 Shortage Risk Score")
-
-    st.metric(
-        "Risk Percentage",
-        f"{risk_score}%"
-    )
+    st.metric("Risk Percentage", f"{risk_score}%")
 
     if risk_score == 0:
         st.success("🟢 Low Risk: Stock is sufficient.")
@@ -402,156 +356,84 @@ else:
     else:
         st.error("🔴 High Risk: Immediate action required!")
 
+    # ---------------- REORDER RECOMMENDATION ----------------
+    st.subheader("📦 Reorder Recommendation")
+
+    if predicted_demand > current_stock:
+        reorder_quantity = predicted_demand - current_stock
+        st.warning(
+            f"⚠️ Recommended to reorder {reorder_quantity} units"
+        )
+    else:
+        st.success(
+            "✅ Current stock is sufficient. No reorder required."
+        )
+
     # ---------------- SHORTAGE DETECTION ----------------
     if predicted_demand > current_stock:
         shortage_status = "Shortage Risk"
         shortage = predicted_demand - current_stock
         reorder_quantity = shortage + 20
-        
+
         st.error(
-            f"⚠️ SHORTAGE RISK! "
-            f"Expected shortage: {shortage} units"
+            f"⚠️ SHORTAGE RISK! Expected shortage: {shortage} units"
         )
-
         st.warning(
-            f"📦 Recommended Reorder Quantity: "
-            f"{reorder_quantity} units"
+            f"📦 Recommended Reorder Quantity: {reorder_quantity} units"
         )
-
     else:
-
         shortage_status = "Stock Sufficient"
-
         reorder_quantity = 0
-
         st.success(
-            "✅ Stock is sufficient. "
-            "No shortage expected."
+            "✅ Stock is sufficient. No shortage expected."
         )
-        # ---------------- EXPIRY ALERT ----------------
 
-st.subheader("📅 Medicine Expiry Alert")
+    # ---------------- EXPIRY ALERT ----------------
+    st.subheader("📅 Medicine Expiry Alert")
 
-today = pd.Timestamp.today()
-
-expiry_date = pd.to_datetime(expiry_date)
-
-days_left = (expiry_date - today).days
-
-if days_left < 0:
-    st.error(f"❌ Medicine Expired! Expired {abs(days_left)} days ago")
-
-elif days_left <= 30:
-    st.warning(f"⚠️ Medicine will expire in {days_left} days")
-
-else:
-    st.success(f"✅ Medicine is safe. {days_left} days remaining")
-    
- # ---------------- EXPIRY CHECK ----------------
-    days_left = (
-        expiry_date - date.today()
-    ).days
+    today = pd.Timestamp.today()
+    expiry_date_ts = pd.to_datetime(expiry_date)
+    days_left = (expiry_date_ts - today).days
 
     if days_left < 0:
-
         expiry_status = "Expired"
-
-        st.error(
-            "❌ Medicine is already expired!"
-        )
-
+        st.error(f"❌ Medicine Expired! Expired {abs(days_left)} days ago")
     elif days_left <= 7:
-
         expiry_status = "Critical"
-
-        st.error(
-            f"🔴 Critical: "
-            f"Expires in {days_left} days!"
-        )
-
+        st.error(f"🔴 Critical: Expires in {days_left} days!")
     elif days_left <= 30:
-
         expiry_status = "Warning"
-
-        st.warning(
-            f"🟠 Warning: "
-            f"Expires in {days_left} days!"
-        )
-
+        st.warning(f"🟠 Warning: Expires in {days_left} days!")
     else:
-
         expiry_status = "Safe"
-
-        st.success(
-            f"🟢 Safe: "
-            f"{days_left} days remaining."
-        )
+        st.success(f"🟢 Safe: {days_left} days remaining.")
 
     # ---------------- SAVE HISTORY ----------------
     history_data = pd.DataFrame({
-
-        "Timestamp": [
-            datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-        ],
-
-        "Medicine_Name": [
-            medicine_name
-        ],
-
-        "Current_Stock": [
-            current_stock
-        ],
-
-        "Sales_Quantity": [
-            sales_quantity
-        ],
-        "Predicted_Demand": [
-            predicted_demand
-        ],
-
-        "Shortage_Status": [
-            shortage_status
-        ],
-
-        "Reorder_Quantity": [
-            reorder_quantity
-        ],
-
-        "Expiry_Date": [
-            expiry_date
-        ],
-
-        "Expiry_Status": [
-            expiry_status
-        ]
-
+        "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+        "Medicine_Name": [medicine_name],
+        "Current_Stock": [current_stock],
+        "Sales_Quantity": [sales_quantity],
+        "Predicted_Demand": [predicted_demand],
+        "Shortage_Status": [shortage_status],
+        "Reorder_Quantity": [reorder_quantity],
+        "Expiry_Date": [expiry_date],
+        "Expiry_Status": [expiry_status]
     })
 
-    history_file = (
-        "prediction_history.csv"
-    )
+    history_file = "prediction_history.csv"
 
     if os.path.exists(history_file):
-
         history_data.to_csv(
             history_file,
             mode="a",
             header=False,
             index=False
         )
-
     else:
+        history_data.to_csv(history_file, index=False)
 
-        history_data.to_csv(
-            history_file,
-            index=False
-        )
-
-    st.info(
-        "💾 Prediction saved successfully!"
-    )
+    st.info("💾 Prediction saved successfully!")
 
 # ---------------- PREDICTION HISTORY ----------------
 st.subheader("📜 Prediction History")
@@ -559,45 +441,21 @@ st.subheader("📜 Prediction History")
 history_file = "prediction_history.csv"
 
 if os.path.exists(history_file):
-
-    history = pd.read_csv(
-        history_file
-    )
-
-    st.dataframe(
-        history,
-        use_container_width=True
-    )
+    history = pd.read_csv(history_file)
+    st.dataframe(history, use_container_width=True)
 
     # ---------------- DOWNLOAD ----------------
     st.download_button(
-
         label="⬇️ Download Prediction History",
-
-        data=history.to_csv(
-            index=False
-        ),
-
+        data=history.to_csv(index=False),
         file_name="prediction_history.csv",
-
         mime="text/csv"
     )
 
     # ---------------- CLEAR HISTORY ----------------
     if st.button("🗑️ Clear Prediction History"):
-
-        os.remove(
-            history_file
-        )
-
-        st.success(
-            "Prediction history cleared successfully!"
-        )
-
+        os.remove(history_file)
+        st.success("Prediction history cleared successfully!")
         st.rerun()
-
 else:
-
-    st.info(
-        "No prediction history available yet."
-    )
+    st.info("No prediction history available yet.")
