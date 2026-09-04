@@ -95,6 +95,34 @@ st.sidebar.divider()
 if st.sidebar.button("🚪 Logout"):
     st.session_state.logged_in = False
     st.rerun()
+    # ---------------- CHANGE PASSWORD ----------------
+
+st.sidebar.subheader("🔐 Change Password")
+
+new_password = st.sidebar.text_input(
+    "New Password",
+    type="password"
+)
+
+if st.sidebar.button("Change Password"):
+
+    if new_password:
+
+        cursor.execute(
+            "UPDATE admins SET password=? WHERE username=?",
+            (new_password, "admin")
+        )
+
+        conn.commit()
+
+        st.sidebar.success(
+            "✅ Password changed successfully!"
+        )
+
+    else:
+        st.sidebar.warning(
+            "⚠️ Please enter a new password"
+        )
 # ---------------- MAIN HEADER ----------------
 st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
 
