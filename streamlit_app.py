@@ -253,6 +253,15 @@ with col2:
         ],
         use_container_width=True
     )
+    # ---------------- LOW STOCK ALERT COUNT ----------------
+
+low_stock_count = len(
+    data[data["Current_Stock"] < 150]
+)
+
+st.info(
+    f"🔔 Low Stock Alert: {low_stock_count} medicines need attention"
+)
 
 # ---------------- SHORTAGE STATUS CHART ----------------
 st.subheader("🚨 Medicine Shortage Status")
