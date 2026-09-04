@@ -4,7 +4,39 @@ import plotly.express as px
 from sklearn.ensemble import RandomForestRegressor
 from datetime import date, datetime
 import os
+# ---------------- ADMIN LOGIN ----------------
 
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin123"
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+
+    st.title("🔐 Admin Login")
+
+    username = st.text_input("Username")
+    password = st.text_input(
+        "Password",
+        type="password"
+    )
+
+    if st.button("Login"):
+
+        if (
+            username == ADMIN_USERNAME
+            and password == ADMIN_PASSWORD
+        ):
+
+            st.session_state.logged_in = True
+            st.success("Login successful! 🎉")
+            st.rerun()
+
+        else:
+            st.error("❌ Invalid Username or Password")
+
+    st.stop()
 # ---------------- PAGE SETTINGS (must be first Streamlit command) ----------------
 st.set_page_config(
     page_title="Medicine Shortage Prediction",
