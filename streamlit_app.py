@@ -201,6 +201,31 @@ fig = px.bar(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+# ---------------- SHORTAGE STATUS CHART ----------------
+
+st.subheader("🚨 Medicine Shortage Status")
+
+shortage_data = data.copy()
+
+shortage_data["Status"] = shortage_data.apply(
+    lambda row: "Shortage Risk"
+    if row["Demand"] > row["Current_Stock"]
+    else "Stock Available",
+    axis=1
+)
+
+status_count = shortage_data["Status"].value_counts()
+
+fig_status = px.pie(
+    values=status_count.values,
+    names=status_count.index,
+    title="Medicine Shortage Status"
+)
+
+st.plotly_chart(
+    fig_status,
+    use_container_width=True
+)
 # ---------------- TOP 5 HIGH DEMAND GRAPH ----------------
 
 st.subheader("🏆 Top 5 High-Demand Medicines")
