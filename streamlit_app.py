@@ -62,7 +62,13 @@ st.sidebar.divider()
 st.sidebar.info(
     "AI-Powered Medicine Shortage & Demand Prediction System"
 )
+# ---------------- LOGOUT ----------------
 
+st.sidebar.divider()
+
+if st.sidebar.button("🚪 Logout"):
+    st.session_state.logged_in = False
+    st.rerun()
 # ---------------- MAIN HEADER ----------------
 st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
 
