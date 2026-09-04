@@ -38,6 +38,23 @@ st.markdown(
 )
 
 st.divider()
+# ---------------- CUSTOM UI STYLE ----------------
+
+st.markdown("""
+<style>
+
+.main {
+    padding: 2rem;
+}
+
+div[data-testid="stMetric"] {
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #dddddd;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # ---------------- PAGE SETTINGS ----------------
 st.set_page_config(
