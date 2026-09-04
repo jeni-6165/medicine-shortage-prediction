@@ -62,6 +62,10 @@ st.sidebar.divider()
 st.sidebar.info(
     "AI-Powered Medicine Shortage & Demand Prediction System"
 )
+# ---------------- ADMIN PROFILE ----------------
+
+st.sidebar.success("👤 Logged in as: Admin")
+st.sidebar.caption("Role: System Administrator")
 # ---------------- LOGOUT ----------------
 
 st.sidebar.divider()
