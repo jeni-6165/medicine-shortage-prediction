@@ -201,6 +201,26 @@ fig = px.bar(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+# ---------------- TOP 5 HIGH DEMAND GRAPH ----------------
+
+st.subheader("🏆 Top 5 High-Demand Medicines")
+
+top_demand = data.sort_values(
+    by="Demand",
+    ascending=False
+).head(5)
+
+fig_top = px.bar(
+    top_demand,
+    x="Medicine_Name",
+    y="Demand",
+    title="Top 5 High-Demand Medicines"
+)
+
+st.plotly_chart(
+    fig_top,
+    use_container_width=True
+)
 
 # ---------------- PREDICTION ----------------
 st.subheader("🔮 Predict Medicine Demand")
