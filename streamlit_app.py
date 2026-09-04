@@ -123,13 +123,6 @@ if st.sidebar.button("Change Password"):
         st.sidebar.warning(
             "⚠️ Please enter a new password"
         )
-        # ---------------- ADMIN STATUS ----------------
-
-st.sidebar.subheader("📊 System Status")
-
-st.sidebar.success("🟢 System Online")
-st.sidebar.write(f"💊 Medicines: {len(data)}")
-st.sidebar.write("🤖 AI Model: Active")
 # ---------------- MAIN HEADER ----------------
 st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
 
