@@ -221,6 +221,30 @@ st.plotly_chart(
     fig_top,
     use_container_width=True
 )
+# ---------------- LOW STOCK GRAPH ----------------
+
+st.subheader("⚠️ Low Stock Medicines")
+
+low_stock_chart = data[
+    data["Current_Stock"] < 150
+]
+
+if not low_stock_chart.empty:
+
+    fig_low = px.bar(
+        low_stock_chart,
+        x="Medicine_Name",
+        y="Current_Stock",
+        title="Low Stock Medicines"
+    )
+
+    st.plotly_chart(
+        fig_low,
+        use_container_width=True
+    )
+
+else:
+    st.success("✅ No Low Stock Medicines Found!")
 
 # ---------------- PREDICTION ----------------
 st.subheader("🔮 Predict Medicine Demand")
