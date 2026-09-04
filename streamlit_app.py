@@ -184,6 +184,23 @@ st.plotly_chart(
     chart2,
     use_container_width=True
 )
+# ---------------- STOCK VS DEMAND GRAPH ----------------
+
+st.subheader("📊 Current Stock vs Demand")
+
+chart_data = data[
+    ["Medicine_Name", "Current_Stock", "Demand"]
+]
+
+fig = px.bar(
+    chart_data,
+    x="Medicine_Name",
+    y=["Current_Stock", "Demand"],
+    barmode="group",
+    title="Medicine Stock vs Demand Comparison"
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 # ---------------- PREDICTION ----------------
 st.subheader("🔮 Predict Medicine Demand")
