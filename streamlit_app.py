@@ -4,10 +4,28 @@ import plotly.express as px
 from sklearn.ensemble import RandomForestRegressor
 from datetime import date, datetime
 import os
-# ---------------- ADMIN LOGIN ----------------
+import sqlite3
+# ---------------- DATABASE SETUP ----------------
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin123"
+conn = sqlite3.connect("admin.db", check_same_thread=False)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS admins (
+    username TEXT PRIMARY KEY,
+    password TEXT NOT NULL
+)
+""")
+
+cursor.execute("""
+INSERT OR IGNORE INTO admins (username, password)
+VALUES ('admin', 'admin123')
+""")
+
+conn.commit()
+
+
+# ---------------- ADMIN LOGIN ----------------
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -24,10 +42,14 @@ if not st.session_state.logged_in:
 
     if st.button("Login"):
 
-        if (
-            username == ADMIN_USERNAME
-            and password == ADMIN_PASSWORD
-        ):
+        cursor.execute(
+            "SELECT * FROM admins WHERE username=? AND password=?",
+            (username, password)
+        )
+
+        admin = cursor.fetchone()
+
+        if admin:
 
             st.session_state.logged_in = True
             st.success("Login successful! 🎉")
