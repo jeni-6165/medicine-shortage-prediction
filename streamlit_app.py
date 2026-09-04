@@ -4,6 +4,25 @@ import plotly.express as px
 from sklearn.ensemble import RandomForestRegressor
 from datetime import date, datetime
 import os
+# ---------------- SIDEBAR ----------------
+
+st.sidebar.title("💊 Medicine AI")
+
+st.sidebar.markdown("""
+### Navigation
+
+🏠 Dashboard  
+💊 Medicine Search  
+🤖 Demand Prediction  
+📊 Analytics  
+📜 Prediction History
+""")
+
+st.sidebar.divider()
+
+st.sidebar.info(
+    "AI-Powered Medicine Shortage & Demand Prediction System"
+)
 
 # ---------------- PAGE SETTINGS ----------------
 st.set_page_config(
