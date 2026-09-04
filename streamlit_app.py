@@ -360,6 +360,23 @@ if st.button("🔮 Predict Demand"):
     st.success(
         f"💊 Predicted Demand: {predicted_demand} units"
     )
+    # ---------------- REORDER RECOMMENDATION ----------------
+
+st.subheader("📦 Reorder Recommendation")
+
+if predicted_demand > current_stock:
+
+    reorder_quantity = predicted_demand - current_stock
+
+    st.warning(
+        f"⚠️ Recommended to reorder {reorder_quantity} units"
+    )
+
+else:
+
+    st.success(
+        "✅ Current stock is sufficient. No reorder required."
+    )
 
     # SHORTAGE RISK SCORE
     if predicted_demand > current_stock:
