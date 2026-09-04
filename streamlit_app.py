@@ -23,6 +23,21 @@ st.sidebar.divider()
 st.sidebar.info(
     "AI-Powered Medicine Shortage & Demand Prediction System"
 )
+# ---------------- MAIN HEADER ----------------
+
+st.title("💊 AI-Powered Medicine Shortage & Demand Prediction System")
+
+st.markdown(
+    """
+    <p style='font-size:18px;'>
+    Predict medicine demand, identify shortage risks, monitor stock levels,
+    and track medicine expiry using Artificial Intelligence.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+st.divider()
 
 # ---------------- PAGE SETTINGS ----------------
 st.set_page_config(
