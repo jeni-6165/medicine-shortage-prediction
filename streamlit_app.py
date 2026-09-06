@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from datetime import date, datetime
 import os
 import sqlite3
+import mysql.connector
 # ---------------- DATABASE SETUP ----------------
 
 conn = sqlite3.connect("admin.db", check_same_thread=False)
