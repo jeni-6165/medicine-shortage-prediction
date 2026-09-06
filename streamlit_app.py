@@ -6,6 +6,15 @@ from datetime import date, datetime
 import os
 import sqlite3
 import mysql.connector
+# ---------------- MYSQL CONNECTION ----------------
+
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="YOUR_MYSQL_PASSWORD",
+        database="medicine_ai"
+    )
 # ---------------- DATABASE SETUP ----------------
 
 conn = sqlite3.connect("admin.db", check_same_thread=False)
